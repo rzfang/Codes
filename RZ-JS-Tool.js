@@ -2,43 +2,6 @@
 
 //==== Other Tool Function =============================================================================================
 
-/* Combine the seconde object into first object.
-  'BsObj' = Base Object.
-  'ExtObj' = Extend Object.
-  'Md' = Mode, 0: Union mode in default, 1: Intersection mode.
-  Return: new object after combined, or null as error. */
-function ObjectCombine (BsObj, ExtObj, Md)
-{
-  if (typeof BsObj !== 'object' || typeof ExtObj !== 'object')
-  { return null; }
-
-  if (typeof Md !== 'number')
-  { Md = 0; }
-
-  var RstObj = {};
-
-  for (var i in BsObj)
-  { RstObj[i] = BsObj[i]; }
-
-  if (Md === 0)
-  {
-    for (var i in ExtObj)
-    { RstObj[i] = ExtObj[i];}
-  }
-  else
-  {
-    for (var i in ExtObj)
-    {
-      if (typeof RstObj[i] === 'undefined')
-      { continue; }
-
-      RstObj[i] = ExtObj[i];
-    }
-  }
-
-  return RstObj;
-}
-
 /* make a random number in the range.
   'Min' = minimum number.
   'Max' = maximum number.
@@ -384,7 +347,6 @@ function SubStrFx (Str, Ofst, Lmt)
 
   return Rst;
 }
-
 
 function D2H (D)
 {
