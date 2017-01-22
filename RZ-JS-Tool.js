@@ -156,25 +156,18 @@ function IsEMail (Str)
   'Chr' = Character. optional, default '0';
   'Sd' = Side. optional, default 'l'. 'l'|'L': left padding, 'r'|'R': right padding.
   Return: string after handle. */
-function CharPad (Str, Lth, Chr, Sd)
-{
-  if (typeof Str !== 'string')
-  { Str = Str.toString(); }
+function CharPad (Str, Lth, Chr, Sd) {
+  if (typeof Str !== 'string') { Str = Str.toString(); }
 
-  if (typeof Lth !== 'number' || Lth < 2 || Str.length >= Lth)
-  { return Str; }
+  if (typeof Lth !== 'number' || Lth < 2 || Str.length >= Lth) { return Str; }
 
-  if (typeof Chr !== 'string' || Chr.length === 0)
-  { Chr = '0'; }
+  if (typeof Chr !== 'string' || Chr.length === 0) { Chr = '0'; }
 
-  if (typeof Sd !== 'string')
-  { Sd = 'l'; }
-  else
-  {
+  if (typeof Sd !== 'string') { Sd = 'l'; }
+  else {
     Sd = Sd.toLowerCase();
 
-    if (Sd !== 'l' && Sd !== 'r')
-    { return Str; }
+    if (Sd !== 'l' && Sd !== 'r') { return Str; }
   }
 
   var PN = Lth - Str.length, // 'PN' = Padding Number.
@@ -182,10 +175,8 @@ function CharPad (Str, Lth, Chr, Sd)
 
   for (PS = ''; PS.length < PN; PS += Chr);
 
-  if (Sd === 'l')
-  { Str = PS + Str; }
-  else
-  { Str += PS; }
+  if (Sd === 'l') { Str = PS + Str; }
+  else { Str += PS; }
 
   return Str;
 }
@@ -196,10 +187,11 @@ function CharPad (Str, Lth, Chr, Sd)
     0: YYYY-MM-DD HH:II:SS.CCC+ZZ. (default)
     1: YYYY-MM-DD HH:II:SS.CCC+ZZ (W).
     2: YYYYMMDDHHIISS.
+    3: YYYY-MM-DD.
+    4: YYYYMMDD.
   Return: datatime string.
   Need: CharPad(). */
-function Second2Datetime (Scd, Fmt)
-{
+function Second2Datetime (Scd, Fmt) {
   var Dt = new Date(Scd * 1000), // 'Dt' = Date.
       DtStr = '',
       TZOM = Dt.getTimezoneOffset(), // 'TZOM' = Time Zone Offset Minute.
@@ -207,23 +199,33 @@ function Second2Datetime (Scd, Fmt)
 
   Scd = parseFloat(Scd);
 
-  if (typeof Fmt !== 'number')
-  { Fmt = 0; }
-  Fmt = parseInt(Fmt, 10);
+  if (typeof Fmt !== 'number') { Fmt = 0; }
 
+  Fmt = parseInt(Fmt, 10);
   TZOH = (TZOH > 0 ? '-' : '+') + CharPad(Math.abs(TZOH), 2);
 
-  switch (Fmt)
-  {
+  switch (Fmt) {
     case 1:
       Dt.setMinutes(Dt.getMinutes() - TZOM);
 
       DtStr = Dt.toJSON().substr(0, 19).replace('T', ' ');
+
       break;
 
     case 2:
       DtStr = '' + Dt.getFullYear() + CharPad((Dt.getMonth() + 1), 2) + CharPad(Dt.getDate(), 2) +
               CharPad(Dt.getHours(), 2) + CharPad(Dt.getMinutes(), 2) + CharPad(Dt.getSeconds(), 2);
+
+      break;
+
+    case 3:
+      DtStr = Dt.getFullYear() + '-' + CharPad((Dt.getMonth() + 1), 2) + '-' + CharPad(Dt.getDate(), 2);
+
+      break;
+
+    case 4:
+      DtStr = Dt.getFullYear() + CharPad((Dt.getMonth() + 1), 2) + CharPad(Dt.getDate(), 2);
+
       break;
 
     case 0:
@@ -774,16 +776,17 @@ function EmbedDeny ()
 /* make a AJAX request.
   'Info' = AJAX Info object, key-value pairs.
   Return: XMLHttpRequest object. or null as error. */
-function AJAX (Info)
-{
-  var DftInfo = {'URL': '',
-                 'Data': {},
-                 'Files': {},
-                 'Err': function(Sts){}, // Error callback function. optional. 'Sts' = HTTP Status code.
-                 'OK': function(RpsTxt, Sts){}}; // OK callback function. optional. 'RpsTxt' = Response Text, 'Sts' = HTTP Status code.
+function AJAX (Info) {
+  var DftInfo = {
+        'URL': '',
+        'Data': {},
+        'Files': {},
+        'Err': function (Sts) {}, // Error callback function. optional. 'Sts' = HTTP Status code.
+        'OK': function (RpsTxt, Sts) {}}; // OK callback function. optional. 'RpsTxt' = Response Text, 'Sts' = HTTP Status code.
 
-  if (typeof Info.URL !== 'string' || Info.URL === '' || typeof Info.Data !== 'object' || Info.Data.length === 0)
-  { return null; }
+  if (typeof Info.URL !== 'string' || Info.URL === '' || typeof Info.Data !== 'object' || Info.Data.length === 0) {
+    return null;
+  }
 
   Info.Mthd = Info.Mthd === 'POST' ? 'POST' : 'GET'; // Method. can only be 'GET'|'POST'. optional, default 'GET'.
   Info.Auto = (typeof Info.Auto === 'boolean') ? Info.Auto : true; // Auto start, give false to control manually be return object. optional, default true.
@@ -796,13 +799,10 @@ function AJAX (Info)
   var FmData = new FormData(),
       XHR = new XMLHttpRequest();
 
-  for (var k in Info.Data)
-  { FmData.append(k, Info.Data[k]); }
+  for (var k in Info.Data) { FmData.append(k, Info.Data[k]); }
 
-  if (typeof Info.File === 'object' && Info.File !== null)
-  {
-    for (var k in Info.File)
-    { FmData.append(k, Info.File[k]); }
+  if (typeof Info.File === 'object' && Info.File !== null) {
+    for (var k in Info.File) { FmData.append(k, Info.File[k]); }
   }
 
   XHR.Go = function(){ XHR.send(FmData); };
@@ -813,15 +813,12 @@ function AJAX (Info)
   XHR.open(Info.Mthd, Info.URL);
   XHR.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // to use AJAX way.
 
-  if (Info.Auto)
-  { XHR.send(FmData); }
+  if (Info.Auto) { XHR.send(FmData); }
 
   return XHR;
 
-  function StateChange()
-  {
-    switch (this.readyState)
-    {
+  function StateChange() {
+    switch (this.readyState) {
       case 0:
         Info.Bfr();
         break;
