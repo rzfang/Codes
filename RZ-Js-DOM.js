@@ -273,13 +273,13 @@
   DOM = {
     Find: Find,
     NewNode: NewNode,
-    Initialize: Z_DOM_Extend
+    Initialize: Initialize
   };
 
   if (typeof window !== 'undefined') {
     if (!window.Z || typeof window.Z !== 'object') { window.Z = {DOM: DOM}; }
     else { window.Z.DOM = DOM; }
 
-    DOM.Initialize;
+    DOM.Initialize();
   }
 })();

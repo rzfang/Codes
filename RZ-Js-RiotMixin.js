@@ -80,7 +80,7 @@
 
   RM = {};
 
-  if (typeof exports !== 'undefined') { exports = RM; }
+  if (typeof module !== 'undefined') { module.exports = RM; }
   else if (typeof window !== 'undefined') {
     RM.AJAX = AJAX;
 
