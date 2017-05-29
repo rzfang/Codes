@@ -109,7 +109,7 @@
   else if (typeof window !== 'undefined') {
     RM.AJAX = AJAX;
 
-    if (!window.Z || typeof window.Z !== 'object') { window.Z = {RM: RM}; }
+    if (!window.Z || typeof window.Z !== 'object') { window.Z = { RM: RM }; }
     else { window.Z.RM = RM; }
   }
 })();
