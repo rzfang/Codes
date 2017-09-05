@@ -72,15 +72,20 @@
     return BsObj;
   }
 
+  function Clone (Obj) {
+    return Merge(null, Obj);
+  }
+
   Obj = {
     Combine: Combine,
     Dig: Dig,
-    Merge: Merge
+    Merge: Merge,
+    Clone: Clone
   };
 
   if (typeof module !== 'undefined') { module.exports = Obj; }
   else if (typeof window !== 'undefined') {
-    if (!window.Z || typeof window.Z !== 'object') { window.Z = { Obj: Obj }; }
+    if (!window.Z || typeof window.Z !== 'object') { window.Z = {Obj: Obj}; }
     else { window.Z.Obj = Obj; }
   }
 })();
