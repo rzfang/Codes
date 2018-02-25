@@ -10,7 +10,7 @@
     Function: function (Obj) { return (typeof Obj === 'function'); },
     Object: function (Obj) { return (typeof Obj === 'object'); },
     Undefined: function (Obj) { return (typeof Obj === 'undefined'); },
-    Array: function (Obj) { return (Obj instanceof Array); },
+    Array: function (Obj) { return Array.isArray(Obj); },
     Date: function (Obj) { return (Obj instanceof Date); },
     Promise: function (Obj) {
       return (typeof Obj !== 'object' || !Obj.hasOwnProperty('then') || !Obj.hasOwnProperty('catch'));
