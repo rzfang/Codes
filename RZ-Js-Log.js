@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 (function Z_Log_API () {
   function Log (Info, Lv = 2) {
     switch (Lv) {
@@ -29,6 +31,8 @@
 
         break;
     }
+
+    return typeof Info !== 'string' ? Info.toString() : Info;
   }
 
   if (typeof module !== 'undefined') { module.exports = Log; }

@@ -151,11 +151,11 @@ function IsEMail (Str)
 }
 
 /* Pad Characters into a string.
-  'Str' = String.
-  'Lth' = Length. minimum length of string should be padding to.
-  'Chr' = Character. optional, default '0';
-  'Sd' = Side. optional, default 'l'. 'l'|'L': left padding, 'r'|'R': right padding.
-  Return: string after handle. */
+  @ string.
+  @ length. minimum length of string should be padding to.
+  @ character. optional, default '0';
+  @ side. optional, default 'l'. 'l'|'L': left padding, 'r'|'R': right padding.
+  < a string after handle. */
 function CharPad (Str, Lth, Chr, Sd) {
   if (typeof Str !== 'string') { Str = Str.toString(); }
 

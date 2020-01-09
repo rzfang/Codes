@@ -95,6 +95,45 @@ function UUID($B32 = false)
          substr($ID, 20, 12);
 }
 
+/* print a image file stream. call this will end the process immediately.
+  Notice: this will register a session value named 'ImgCd'. */
+function CodeImage ()
+{
+  if (session_id() === '')
+    session_start();
+
+  $BgClrA = array(0x00ffc0c0, 0x00c0ffc0, 0x00c0c0ff, 0x00ffffc0, 0x00ffc0ff, 0x00c0ffff); // '$BgClrA' = Background Color Array.
+  $ClrIdx = array_rand($BgClrA);
+  $Str = '';
+
+  $IvtClr = ((255 - (($BgClrA[$ClrIdx] & 0x00ff0000) >> 16)) << 16) +
+            ((255 - (($BgClrA[$ClrIdx] & 0x0000ff00) >> 8)) << 8) +
+            (255 - ($BgClrA[$ClrIdx] & 0x000000ff));
+
+  $Img = imagecreatetruecolor(100, 20);
+
+  imagefill($Img, 0, 0, $BgClrA[$ClrIdx]); // background color set.
+
+  for ($i = 0; $i < 5; $i++)
+  {
+    $Chr = chr(mt_rand(65, 90));
+    $Str .= $Chr;
+
+    imagestring($Img, 5, $i * 20 + 5, 3, $Chr, $IvtClr);
+  }
+
+  $_SESSION['ImgCd'] = $Str;
+
+  for ($i = 0; $i < 100; $i++)
+    imagesetpixel($Img, mt_rand(1, 98), rand(1, 18), $IvtClr);
+
+  header('Content-type: image/png');
+  imagepng($Img);
+  imagedestroy($Img);
+
+  exit;
+}
+
 //==== String Tool =====================================================================================================
 
 /* check if a string is a URL.
@@ -373,6 +412,50 @@ function ImageFileOut($FlPth)
   exit;
 }
 
+/* recursive scan and list file / directory by given path.
+  '$RtPth' = Root Path to scan.
+  '$Tp' = Type, optional, default 0 as file & directory, 1 as file only, 2 as directory only.
+  Return: array of file / directory full path, or empty array as error. */
+function FileList ($RtPth, $Tp = 0)
+{
+  if (empty($RtPth) || !is_dir($RtPth))
+    return array();
+
+  if (substr($RtPth, -1) != '/')
+    $RtPth .= '/';
+
+  if (empty($Tp) || !is_numeric($Tp) || $Tp < 0)
+    $Tp = 0;
+
+  $TA = array_slice(scandir($RtPth, 0), 2);
+  $FA = array();
+  $DA = array();
+
+  foreach($TA as $V)
+  {
+    $TP = $RtPth . $V;
+
+    if (is_file($TP))
+      $FA[] = $TP;
+    else if (is_dir($TP))
+      $DA[] = $TP . '/';
+  }
+
+  $RA = array();
+
+  foreach($DA as $V)
+    $RA = array_merge($RA, FileList($V, $Tp));
+
+  if ($Tp == 1)
+    $RA = array_merge($FA, $RA);
+  else if ($Tp == 2)
+    $RA = array_merge($DA, $RA);
+  else
+    $RA = array_merge($FA, $DA, $RA);
+
+  return $RA;
+}
+
 //==== HTTP Tool =======================================================================================================
 
 /* Try to get client IP.
@@ -526,6 +609,25 @@ function CURLDataGet($URL, $HdA = array())
     return null;
 
   return $SX;
+}
+
+/* handle the error message shown or hidden. this will start the session.
+  'DvMd' = Developement mode. optional, default false */
+function ErrorHintHandle ($DvMd = false)
+{
+  if (session_id() === '')
+    session_start();
+
+  if ($DvMd || (isset($_SESSION[SSN_ERR_HNT]) && $_SESSION[SSN_ERR_HNT]))
+  {
+    ini_set('display_errors', 1);
+    ini_set('error_reporting', E_ALL);
+  }
+  else
+  {
+    ini_set('display_errors', 0);
+    ini_set('error_reporting', E_ERROR);
+  }
 }
 
 //======================================================================================================================
